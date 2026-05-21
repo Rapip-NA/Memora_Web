@@ -2,7 +2,7 @@ name: Deploy Laravel Project on push to cpanel
 on:
   push:
     branches:
-      - main
+      - develop
 jobs:
   web-deploy:
     name: Deploy
@@ -40,6 +40,7 @@ jobs:
             **/.git*
             **/.git*/**
             **/node_modules/**
+            **/vendor/**
             **/tests/**
             .env.example
             .editorconfig
