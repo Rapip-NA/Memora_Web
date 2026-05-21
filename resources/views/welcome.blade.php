@@ -111,6 +111,8 @@
             box-shadow: 0 8px 0 0 #EA580C;
         }
     </style>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{{ asset('assets/img/Memora 1.png') }}">
 </head>
 <body class="antialiased bg-white text-dark dark:bg-darkBg dark:text-white selection:bg-lime dark:selection:bg-orange selection:text-white">
 

@@ -82,6 +82,8 @@
             z-index: -1;
         }
     </style>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{{ asset('assets/img/Memora 1.png') }}">
 </head>
 <body class="antialiased min-h-screen flex items-center justify-center relative p-6 selection:bg-lime selection:text-white">
     

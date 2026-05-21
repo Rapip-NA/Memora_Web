@@ -64,6 +64,8 @@
             }
         });
     </script>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{{ asset('assets/img/Memora 1.png') }}">
 </head>
 <body>
     @php
