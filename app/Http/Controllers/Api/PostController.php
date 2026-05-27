@@ -24,6 +24,10 @@ class PostController extends Controller
             $query->where('category', $request->category);
         }
 
+        if ($request->filled('user_id')) {
+            $query->where('user_id', $request->user_id);
+        }
+
         $posts = $query->paginate(15);
 
         return PostMinimalResource::collection($posts)->additional([

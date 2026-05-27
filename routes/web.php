@@ -17,6 +17,15 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+// ── Public storage file serving (bypass Windows junction issue) ──────────────
+Route::get('/storage/{path}', function (string $path) {
+    $filePath = storage_path('app/public/' . $path);
+    if (! file_exists($filePath)) {
+        abort(404);
+    }
+    return response()->file($filePath);
+})->where('path', '.*')->name('storage.serve');
+
 Route::get('/login', [\App\Http\Controllers\AuthController::class, 'showLoginForm'])->name('login')->middleware('guest');
 Route::post('/login', [\App\Http\Controllers\AuthController::class, 'login'])->middleware('guest');
 Route::get('/register', [\App\Http\Controllers\AuthController::class, 'showRegisterForm'])->name('register')->middleware('guest');

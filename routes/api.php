@@ -41,6 +41,7 @@ Route::middleware(['auth:sanctum', 'check.status'])->group(function () {
         Route::get('/{id}',        [UserController::class, 'show'])->name('show');
         Route::put('/{id}',        [UserController::class, 'update'])->name('update');
         Route::post('/{id}/photo', [UserController::class, 'uploadPhoto'])->name('uploadPhoto');
+        Route::post('/{id}/banner-photo', [UserController::class, 'uploadBannerPhoto'])->name('uploadBannerPhoto');
     });
 
     // ─── Posts ────────────────────────────────────────────────────────────

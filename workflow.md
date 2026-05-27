@@ -2,7 +2,7 @@ name: Deploy Laravel Project on push to cpanel
 on:
   push:
     branches:
-      - develop
+      - main
 jobs:
   web-deploy:
     name: Deploy
@@ -36,6 +36,10 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           server-dir: /
+          protocol: ftp
+          port: 21
+          timeout: 60000
+          log-level: verbose
           exclude: |
             **/.git*
             **/.git*/**
