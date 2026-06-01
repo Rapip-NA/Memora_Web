@@ -69,9 +69,9 @@
 </head>
 <body>
     @php
-        $sidebarUser = auth()->user() ?? \App\Models\User::first();
+        $sidebarUser = auth()->user();
         $sidebarAvatar = $sidebarUser->avatar_url;
-        $unreadCount = \App\Models\Notification::where('user_id', auth()->id() ?? 1)->whereNull('read_at')->count();
+        $unreadCount = \App\Models\Notification::where('user_id', auth()->id())->whereNull('read_at')->count();
     @endphp
     <div class="dashboard-container">
         <x-sidebar :unreadCount="$unreadCount" :sidebarUser="$sidebarUser" :sidebarAvatar="$sidebarAvatar" />
@@ -795,8 +795,8 @@
             .catch(error => console.error('Error fetching notifications:', error));
         }
 
-        // Fetch new notifications every 5 seconds for a real-time feel
-        setInterval(updateNotificationBadges, 5000);
+        // Fetch new notifications every 30 seconds for a real-time feel
+        setInterval(updateNotificationBadges, 30000);
     </script>
 </body>
 </html>

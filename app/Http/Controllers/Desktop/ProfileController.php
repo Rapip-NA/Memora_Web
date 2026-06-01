@@ -15,7 +15,7 @@ class ProfileController extends Controller
 {
     public function index()
     {
-        $currentUser = auth()->user() ?? User::first();
+        $currentUser = auth()->user();
         $posts = Post::where('user_id', $currentUser->id)
                     ->with(['user', 'comments.user', 'likes', 'bookmarks'])
                     ->latest()
@@ -25,7 +25,7 @@ class ProfileController extends Controller
 
     public function update(Request $request)
     {
-        $user = auth()->user() ?? User::first();
+        $user = auth()->user();
         
         $request->validate([
             'name' => 'required|string|max:255',

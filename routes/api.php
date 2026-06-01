@@ -21,8 +21,8 @@ use Illuminate\Support\Facades\Route;
 
 // ─── Auth: Public (tanpa autentikasi) ─────────────────────────────────────
 Route::prefix('auth')->name('api.auth.')->group(function () {
-    Route::post('/register', [AuthController::class, 'register'])->name('register');
-    Route::post('/login',    [AuthController::class, 'login'])->name('login');
+    Route::post('/register', [AuthController::class, 'register'])->name('register')->middleware('throttle:3,1');
+    Route::post('/login',    [AuthController::class, 'login'])->name('login')->middleware('throttle:5,1');
 });
 
 // ─── Protected Routes (butuh token Sanctum + akun aktif) ──────────────────
