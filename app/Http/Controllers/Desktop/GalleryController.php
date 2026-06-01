@@ -48,15 +48,7 @@ class GalleryController extends Controller
         $filename  = Str::uuid() . '.' . $file->getClientOriginalExtension();
         $filePath  = $file->storeAs('photos/gallery', $filename, 'public');
 
-        $user = auth()->user() ?? User::first();
-
-        if (!$user) {
-            $user = User::create([
-                'name' => 'Demo User',
-                'email' => 'demo' . time() . '@example.com',
-                'password' => bcrypt('password'),
-            ]);
-        }
+        $user = auth()->user();
 
         $albumName = $request->album_select;
         if ($albumName === 'new_album' && !empty($request->new_album_name)) {
@@ -79,7 +71,7 @@ class GalleryController extends Controller
     public function update(Request $request, $id)
     {
         $photo = GalleryPhoto::findOrFail($id);
-        $user = auth()->user() ?? User::first();
+        $user = auth()->user();
         
         if ($photo->user_id !== $user->id) {
             abort(403, 'Unauthorized action.');
@@ -109,7 +101,7 @@ class GalleryController extends Controller
     public function destroy($id)
     {
         $photo = GalleryPhoto::findOrFail($id);
-        $user = auth()->user() ?? User::first();
+        $user = auth()->user();
         
         if ($photo->user_id !== $user->id) {
             abort(403, 'Unauthorized action.');

@@ -2,21 +2,24 @@
 
 @section('content')
 @php
-    $currentUser = auth()->user() ?? \App\Models\User::first();
+    $currentUser = auth()->user();
 @endphp
 
 <div class="content-grid" style="grid-template-columns: 1fr;">
-    <div class="gallery-container">
+    <div class="gallery-container" style="min-width: 0;">
         
         <!-- Gallery Header -->
-        <div class="profile-header" style="background: linear-gradient(135deg, var(--text-dark), var(--primary-color)); padding: 40px; border-radius: var(--radius-lg); color: white; margin-bottom: 32px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
-            <i class='bx bx-images' style="font-size: 48px; margin-bottom: 16px; opacity: 0.9;"></i>
-            <h2 style="font-size: 36px; font-weight: 800; margin-bottom: 8px;">Galeri Kenangan</h2>
-            <p style="font-size: 16px; opacity: 0.9; max-width: 600px;">Kumpulan foto kenangan angkatan kita. Bagikan momen tak terlupakanmu di sini.</p>
-            <div style="margin-top: 24px;">
-                <button class="btn-solid" onclick="openModal('uploadModal')" style="background: white; color: var(--text-dark); display: inline-flex; align-items: center; gap: 8px;"><i class='bx bx-upload'></i> Unggah Foto</button>
+        <div style="background: linear-gradient(135deg, #1a1a2e, #16a34a); padding: 48px 40px; border-radius: var(--radius-lg); color: white; margin-bottom: 32px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 0;">
+            <i class='bx bx-images' style="font-size: 52px; margin-bottom: 16px; opacity: 0.9;"></i>
+            <h2 style="font-size: 36px; font-weight: 800; margin-bottom: 12px; color: white;">Galeri Kenangan</h2>
+            <p style="font-size: 16px; opacity: 0.85; max-width: 520px; line-height: 1.6; color: white; margin: 0;">Kumpulan foto kenangan angkatan kita. Bagikan momen tak terlupakan Anda di sini.</p>
+            <div style="margin-top: 28px;">
+                <button onclick="openModal('uploadModal')" style="background: white; color: #1a1a2e; border: none; padding: 12px 28px; border-radius: var(--radius-full); font-weight: 700; font-size: 15px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s; box-shadow: 0 4px 16px rgba(0,0,0,0.2);" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 24px rgba(0,0,0,0.25)'" onmouseout="this.style.transform='';this.style.boxShadow='0 4px 16px rgba(0,0,0,0.2)'">
+                    <i class='bx bx-upload'></i> Unggah Foto
+                </button>
             </div>
         </div>
+
 
         <!-- Filter/Tabs -->
         @php
