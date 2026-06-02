@@ -93,6 +93,21 @@
             color: #6B7280;
         }
 
+        /* Select styling */
+        select.form-input {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+        select.form-input option {
+            background-color: #ffffff;
+            color: #191A23;
+        }
+        .dark select.form-input option {
+            background-color: #191A23;
+            color: #ffffff;
+        }
+
         .btn-primary {
             background-color: #191A23;
             color: #ffffff;
@@ -213,6 +228,35 @@
                     </button>
                 </div>
             </div>
+
+            @if($classrooms->count() > 0)
+            <div>
+                <label for="classroom_id" class="block text-sm font-bold text-dark dark:text-white mb-2">
+                    Kelas <span class="text-red-500">*</span>
+                </label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 dark:text-gray-500">
+                        <i class='bx bx-chalkboard text-xl'></i>
+                    </div>
+                    <select id="classroom_id" name="classroom_id" required
+                        class="form-input w-full pl-11 pr-10 py-3.5 rounded-xl font-medium appearance-none cursor-pointer"
+                        style="background-image: none;">
+                        <option value="" disabled {{ old('classroom_id') ? '' : 'selected' }}>-- Pilih Kelas Kamu --</option>
+                        @foreach($classrooms as $classroom)
+                            <option value="{{ $classroom->id }}" {{ old('classroom_id') == $classroom->id ? 'selected' : '' }}>
+                                {{ $classroom->name }}{{ $classroom->description ? ' — ' . $classroom->description : '' }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-gray-400 dark:text-gray-500">
+                        <i class='bx bx-chevron-down text-xl'></i>
+                    </div>
+                </div>
+                @error('classroom_id')
+                    <p class="mt-1.5 text-sm text-red-500 font-medium">{{ $message }}</p>
+                @enderror
+            </div>
+            @endif
 
             <button type="submit" class="btn-primary w-full py-4 rounded-xl font-bold text-lg mt-6 flex items-center justify-center gap-2">
                 <span>Daftar Sekarang</span>

@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\PostController;
 use App\Http\Controllers\Api\RsvpController;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\ClassroomController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -91,6 +92,9 @@ Route::middleware(['auth:sanctum', 'check.status'])->group(function () {
         Route::put('/{id}/read',     [NotificationController::class, 'markAsRead'])->name('read');
     });
 
+    // ─── Classrooms ──────────────────────────────────────────────────
+    Route::get('/classrooms', [ClassroomController::class, 'index'])->name('api.classrooms.index');
+
     // ─── Admin Routes (tambahan: check.admin) ───────────────────────────
     Route::middleware('check.admin')->prefix('admin')->name('api.admin.')->group(function () {
         // Stats (milik Rafif)
@@ -108,6 +112,11 @@ Route::middleware(['auth:sanctum', 'check.status'])->group(function () {
 
         // Broadcast notification
         Route::post('/notifications/broadcast',       [AdminController::class,  'broadcastNotification'])->name('notifications.broadcast');
+
+        // Classrooms management (admin only)
+        Route::post('/classrooms',                    [ClassroomController::class,  'store'])->name('classrooms.store');
+        Route::put('/classrooms/{id}',                [ClassroomController::class,  'update'])->name('classrooms.update');
+        Route::delete('/classrooms/{id}',             [ClassroomController::class,  'destroy'])->name('classrooms.destroy');
     });
 
 });

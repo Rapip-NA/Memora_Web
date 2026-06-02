@@ -13,26 +13,41 @@ class GalleryController extends Controller
 {
     public function index(Request $request)
     {
-        $album = $request->query('album');
-        $query = GalleryPhoto::with('user')->latest();
+        $selectedAlbum = $request->query('album');
         
-        if ($album && $album !== 'Semua') {
-            $query->where('album', $album);
+        // Group photos by album to build folder list
+        $albums = GalleryPhoto::selectRaw('IFNULL(NULLIF(album, ""), "Lainnya") as album_name')
+            ->selectRaw('count(*) as photo_count')
+            ->selectRaw('max(created_at) as latest_photo_at')
+            ->groupBy('album_name')
+            ->orderBy('latest_photo_at', 'desc')
+            ->get()
+            ->map(function ($item) {
+                $rawAlbum = $item->album_name === 'Lainnya' ? ['', null, 'Lainnya'] : [$item->album_name];
+                $latestPhoto = GalleryPhoto::whereIn('album', $rawAlbum)
+                    ->latest()
+                    ->first();
+                $item->cover_url = $latestPhoto ? \Storage::url($latestPhoto->file_path) : null;
+                return $item;
+            });
+
+        $allAlbums = $albums->pluck('album_name')->toArray();
+
+        // If an album is selected, fetch the photos inside it
+        $photos = collect();
+        if ($selectedAlbum) {
+            $query = GalleryPhoto::with('user')->latest();
+            if ($selectedAlbum === 'Lainnya') {
+                $query->where(function($q) {
+                    $q->whereNull('album')->orWhere('album', '')->orWhere('album', 'Lainnya');
+                });
+            } else {
+                $query->where('album', $selectedAlbum);
+            }
+            $photos = $query->get();
         }
-        
-        $photos = $query->get();
-        
-        $albums = GalleryPhoto::whereNotNull('album')
-                    ->where('album', '!=', '')
-                    ->distinct()
-                    ->pluck('album')
-                    ->toArray();
-                    
-        // Include default albums if they don't exist in DB to keep the UI consistent initially
-        $defaultAlbums = ['Wisuda 2024', 'Malam Keakraban', 'Album Kelas', 'Lainnya'];
-        $allAlbums = array_unique(array_merge($defaultAlbums, $albums));
-        
-        return view('desktop.gallery', compact('photos', 'album', 'allAlbums'));
+
+        return view('desktop.gallery', compact('photos', 'selectedAlbum', 'albums', 'allAlbums'));
     }
 
     public function store(Request $request)

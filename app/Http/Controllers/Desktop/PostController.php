@@ -28,6 +28,13 @@ class PostController extends Controller
         return view('desktop.feed', compact('posts', 'currentUser'));
     }
 
+    public function show($id)
+    {
+        $post = Post::with(['user', 'comments.user', 'likes', 'bookmarks', 'poll.options', 'poll.votes'])->findOrFail($id);
+        $currentUser = auth()->user();
+        return view('desktop.post-show', compact('post', 'currentUser'));
+    }
+
     public function store(Request $request)
     {
         $request->validate([

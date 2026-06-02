@@ -30,6 +30,8 @@ class UserResource extends JsonResource
             'born_date'  => $this->born_date?->format('Y-m-d'),
             'lat'        => $this->lat,
             'lng'        => $this->lng,
+            'classroom_id' => $this->classroom_id,
+            'classroom'  => $this->classroom ? new ClassroomResource($this->classroom) : null,
             'photo_url'  => $this->avatar_url,
             'banner_url' => $this->banner_url,
             'social_links' => $this->social_links,

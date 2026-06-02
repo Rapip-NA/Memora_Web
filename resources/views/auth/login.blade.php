@@ -178,10 +178,6 @@
             </div>
 
             <div>
-                <div class="flex items-center justify-between mb-2">
-                    <label for="password" class="block text-sm font-bold text-dark dark:text-white">Kata Sandi</label>
-                    <a href="#" class="text-sm font-bold text-gray-500 dark:text-gray-400 hover:text-lime dark:hover:text-orange transition-colors">Lupa sandi?</a>
-                </div>
                 <div class="relative">
                     <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 dark:text-gray-500">
                         <i class='bx bx-lock-alt text-xl'></i>

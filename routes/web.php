@@ -6,6 +6,8 @@ use App\Http\Controllers\Desktop\EventController;
 use App\Http\Controllers\Desktop\ProfileController;
 use App\Http\Controllers\Desktop\GalleryController;
 use App\Http\Controllers\Desktop\DashboardController;
+use App\Http\Controllers\Desktop\AdminController;
+
 use App\Http\Controllers\Desktop\ExploreController;
 use App\Http\Controllers\Desktop\NotificationController;
 
@@ -33,37 +35,62 @@ Route::post('/logout', [\App\Http\Controllers\AuthController::class, 'logout'])-
 
 Route::middleware('auth')->group(function () {
 
-    Route::get('/desktop/profile', [ProfileController::class, 'index'])->name('desktop.profile');
-    Route::put('/desktop/profile', [ProfileController::class, 'update'])->name('desktop.profile.update');
+    // Rute untuk pengguna yang sedang menunggu persetujuan (pending)
+    Route::get('/pending', function () {
+        return view('auth.pending');
+    })->name('pending');
 
-    Route::get('/desktop/feed', [PostController::class, 'feed'])->name('desktop.feed');
+    // Rute yang diproteksi agar hanya pengguna aktif yang bisa masuk
+    Route::middleware('check.status')->group(function () {
+        Route::get('/desktop/profile', [ProfileController::class, 'index'])->name('desktop.profile');
+        Route::put('/desktop/profile', [ProfileController::class, 'update'])->name('desktop.profile.update');
 
-    Route::get('/desktop/explore', [ExploreController::class, 'index'])->name('desktop.explore');
+        Route::get('/desktop/feed', [PostController::class, 'feed'])->name('desktop.feed');
+        Route::get('/desktop/post/{id}', [PostController::class, 'show'])->name('desktop.post.show');
 
-    Route::get('/desktop/dashboard', [DashboardController::class, 'index'])->name('desktop.dashboard');
-    Route::get('/desktop/dashboard/data', [DashboardController::class, 'data'])->name('desktop.dashboard.data');
+        Route::get('/desktop/explore', [ExploreController::class, 'index'])->name('desktop.explore');
+        Route::get('/desktop/users', [ExploreController::class, 'users'])->name('desktop.users');
 
-    Route::get('/desktop/events', [EventController::class, 'index'])->name('desktop.events');
-    Route::get('/desktop/events/{id}', [EventController::class, 'show'])->name('desktop.events.show');
-    Route::post('/desktop/events/{id}/rsvp', [EventController::class, 'rsvp'])->name('desktop.events.rsvp');
-    Route::post('/desktop/events/{id}/comment', [EventController::class, 'comment'])->name('desktop.events.comment');
+        Route::get('/desktop/events', [EventController::class, 'index'])->name('desktop.events');
+        Route::get('/desktop/events/{id}', [EventController::class, 'show'])->name('desktop.events.show');
+        Route::post('/desktop/events/{id}/rsvp', [EventController::class, 'rsvp'])->name('desktop.events.rsvp');
+        Route::post('/desktop/events/{id}/comment', [EventController::class, 'comment'])->name('desktop.events.comment');
 
-    Route::get('/desktop/notification', [NotificationController::class, 'index'])->name('desktop.notification');
-    Route::get('/desktop/notifications/count', [NotificationController::class, 'count'])->name('desktop.notifications.count');
+        Route::get('/desktop/notification', [NotificationController::class, 'index'])->name('desktop.notification');
+        Route::get('/desktop/notifications/count', [NotificationController::class, 'count'])->name('desktop.notifications.count');
 
-    Route::get('/desktop/gallery', [GalleryController::class, 'index'])->name('desktop.gallery');
+        Route::get('/desktop/gallery', [GalleryController::class, 'index'])->name('desktop.gallery');
 
-    Route::post('/desktop/post', [PostController::class, 'store'])->name('desktop.post.store');
-    Route::post('/desktop/poll/{id}/vote', [PostController::class, 'votePoll'])->name('desktop.poll.vote');
-    Route::post('/desktop/post/{id}/like', [PostController::class, 'like'])->name('desktop.post.like');
-    Route::post('/desktop/post/{id}/comment', [PostController::class, 'comment'])->name('desktop.post.comment');
-    Route::put('/desktop/post/{id}', [PostController::class, 'update'])->name('desktop.post.update');
-    Route::delete('/desktop/post/{id}', [PostController::class, 'destroy'])->name('desktop.post.destroy');
-    Route::post('/desktop/post/{id}/bookmark', [PostController::class, 'bookmark'])->name('desktop.post.bookmark');
+        Route::post('/desktop/post', [PostController::class, 'store'])->name('desktop.post.store');
+        Route::post('/desktop/poll/{id}/vote', [PostController::class, 'votePoll'])->name('desktop.poll.vote');
+        Route::post('/desktop/post/{id}/like', [PostController::class, 'like'])->name('desktop.post.like');
+        Route::post('/desktop/post/{id}/comment', [PostController::class, 'comment'])->name('desktop.post.comment');
+        Route::put('/desktop/post/{id}', [PostController::class, 'update'])->name('desktop.post.update');
+        Route::delete('/desktop/post/{id}', [PostController::class, 'destroy'])->name('desktop.post.destroy');
+        Route::post('/desktop/post/{id}/bookmark', [PostController::class, 'bookmark'])->name('desktop.post.bookmark');
 
-    Route::get('/desktop/bookmarks', [NotificationController::class, 'bookmarks'])->name('desktop.bookmarks');
+        Route::get('/desktop/bookmarks', [NotificationController::class, 'bookmarks'])->name('desktop.bookmarks');
 
-    Route::post('/desktop/gallery', [GalleryController::class, 'store'])->name('desktop.gallery.store');
-    Route::put('/desktop/gallery/{id}', [GalleryController::class, 'update'])->name('desktop.gallery.update');
-    Route::delete('/desktop/gallery/{id}', [GalleryController::class, 'destroy'])->name('desktop.gallery.destroy');
+        Route::post('/desktop/gallery', [GalleryController::class, 'store'])->name('desktop.gallery.store');
+        Route::put('/desktop/gallery/{id}', [GalleryController::class, 'update'])->name('desktop.gallery.update');
+        Route::delete('/desktop/gallery/{id}', [GalleryController::class, 'destroy'])->name('desktop.gallery.destroy');
+    });
+
+    // Rute khusus Administrator
+    Route::middleware('check.admin')->group(function () {
+        Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+        Route::get('/admin/dashboard/data', [DashboardController::class, 'data'])->name('admin.dashboard.data');
+        Route::get('/admin/validation', [AdminController::class, 'validation'])->name('admin.validation');
+        Route::post('/admin/validation/{id}/approve', [AdminController::class, 'approve'])->name('admin.validation.approve');
+        Route::post('/admin/validation/{id}/reject', [AdminController::class, 'reject'])->name('admin.validation.reject');
+        Route::get('/admin/monitoring', [AdminController::class, 'monitoring'])->name('admin.monitoring');
+        Route::delete('/admin/monitoring/post/{id}', [AdminController::class, 'deletePost'])->name('admin.monitoring.deletePost');
+        // Classroom Management
+        Route::get('/admin/classrooms', [AdminController::class, 'classrooms'])->name('admin.classrooms');
+        Route::post('/admin/classrooms', [AdminController::class, 'storeClassroom'])->name('admin.classrooms.store');
+        Route::put('/admin/classrooms/{id}', [AdminController::class, 'updateClassroom'])->name('admin.classrooms.update');
+        Route::delete('/admin/classrooms/{id}', [AdminController::class, 'destroyClassroom'])->name('admin.classrooms.destroy');
+        // User Management
+        Route::get('/admin/users', [AdminController::class, 'users'])->name('admin.users');
+    });
 });

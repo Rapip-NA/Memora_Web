@@ -436,11 +436,11 @@
     }
 
     function sharePost(postId) {
-        const url = window.location.origin + `/desktop/feed`; // Since we don't have individual post page yet
+        const url = window.location.origin + `/desktop/post/${postId}`;
         navigator.clipboard.writeText(url).then(() => {
             Swal.fire({
                 title: 'Berhasil!',
-                text: 'Link feed berhasil disalin!',
+                text: 'Link postingan berhasil disalin!',
                 icon: 'success',
                 toast: true,
                 position: 'bottom-end',
