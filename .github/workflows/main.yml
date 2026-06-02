@@ -1,51 +1,58 @@
 name: Deploy Laravel Project on push to cpanel
-
 on:
   push:
     branches:
       - main
-
 jobs:
   web-deploy:
     name: Deploy
     runs-on: ubuntu-latest
     steps:
       - name: Get the latest code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Set up PHP
+      - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.2'
+          php-version: '8.4'
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: '20'
 
-      - name: Copy .env
-        run: php -r "file_exists('.env') || copy('.env.example', '.env');"
+      - name: Install Composer Dependencies
+        run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist --optimize-autoloader
 
-      - name: Install Node Dependencies & Build Assets
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install NPM Dependencies & Build
         run: |
           npm install
           npm run build
 
-      - name: Directory Permissions
-        run: chmod -R 777 storage bootstrap/cache
-
-      - name: 📂 Sync files via FTP
-        uses: SamKirkland/FTP-Deploy-Action@4.3.0
+      - name: 📂 Sync files
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           server-dir: /
+          protocol: ftp
+          port: 21
+          timeout: 60000
+          log-level: verbose
           exclude: |
             **/.git*
             **/.git*/**
             **/node_modules/**
             **/vendor/**
-            **/storage/**
-            **.env
             **/tests/**
+            .env.example
+            .editorconfig
+            .gitignore
+            .gitattributes
+            README.md
